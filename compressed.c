@@ -224,9 +224,6 @@ int main(int argc, char* argv[]) {
   node* root = malloc(sizeof(node));
   init_node(root, '\0');
 
-  argc = 2;
-  argv[1] = "/usr/share/dict/words";
-
   if(argc == 1) {
     fprintf(stderr, "Usage: %s /path/to/word-list\n", argv[0]);
     return 1;
