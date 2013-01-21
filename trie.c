@@ -212,7 +212,7 @@ strings* complete(node* root, char* prefix) {
     strings* res = malloc(sizeof(strings)+len*sizeof(string));
     res->length = len;
     string* str;
-    uint32_t j;
+    int j;
 
     // Loop from length to 0, inclusive. We can't check if i >= 0, since i is unsigned.
     for(i = len; i--;) {
@@ -220,7 +220,7 @@ strings* complete(node* root, char* prefix) {
 
       res->strings[i].value[str->length + prefix_len] = '\0';
       // We don't want to include the last item in the prefix (since it's going to be in the generated suffixes)
-      for(j = 0; j < prefix_len-1; j++) {
+      for(j = 0; j < (int) prefix_len-1; j++) {
 	res->strings[i].value[j] = prefix[j];
 	res->strings[i].length++;
       }
