@@ -201,20 +201,28 @@ strings* complete(node* root, char* prefix) {
     return NULL;
   } else {
     GSList* suffixes = reversed_suffixes(n);
-    uint32_t len = g_slist_length(suffixes);
+    uint32_t len, prefix_len;
+    len = g_slist_length(suffixes);
+    prefix_len = strlen(prefix);
     strings* res = malloc(sizeof(strings)+len*sizeof(string));
+    res->length = len;
     string* str;
     uint32_t j;
 
-    for(i = len; i > 0; i--) {
+    // Loop from length to 0, inclusive. We can't check if i >= 0, since i is unsigned.
+    for(i = len; i--;) {
       str = g_slist_nth_data(suffixes, 0);
 
-      res->strings[i-1].value[str->length] = '\0';
-      for(j = 0; str->length--; j++) {
-	res->strings[i-1].value[j] = str->value[str->length];
-        res->strings[i-1].length++;
+      res->strings[i].value[str->length + prefix_len] = '\0';
+      // We don't want to include the last item in the prefix (since it's going to be in the generated suffixes)
+      for(j = 0; j < prefix_len-1; j++) {
+	res->strings[i].value[j] = prefix[j];
+	res->strings[i].length++;
       }
-      res->length++;
+      for(j = prefix_len-1; str->length--; j++) {
+	res->strings[i].value[j] = str->value[str->length];
+        res->strings[i].length++;
+      }
 
       suffixes = g_slist_remove(suffixes, str);
       free(str);
