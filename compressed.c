@@ -72,6 +72,13 @@ void init_node(node* n, uint8_t value) {
   n->end_of_word = false;
 }
 
+node* make_node(char value, uint8_t array_size) {
+  node* res = malloc(sizeof(node) + array_size*sizeof(node*));
+  init_node(res, value);
+  res->array_size = array_size;
+  return res;
+}
+
 uint8_t child_index_of(node n, uint8_t b) {
   uint64_t mask_below_b[4];
   int i;
@@ -128,9 +135,7 @@ node** add_child(node** node_pointer, uint8_t b) {
       }
     }
 
-    n->children[index] = malloc(sizeof(node));
-    init_node(n->children[index], b);
-
+    n->children[index] = make_node(b, 1);
     n->num_children++;
   }
 
@@ -185,7 +190,7 @@ bool contains(node* root, char* word) {
     n = n->children[child_index_of(*n, b)];
   }
 
-  return !(n == NULL);
+  return n != NULL && n->end_of_word;
 }
 
 strings* complete(node* root, char* prefix) {
@@ -236,8 +241,7 @@ int main(int argc, char* argv[]) {
   int i,j;
   FILE* in;
   char* line = malloc(MAX_STRING_SIZE);
-  node* root = malloc(sizeof(node));
-  init_node(root, '\0');
+  node* root = make_node('\0', 26);
 
   if(argc == 1) {
     fprintf(stderr, "Usage: %s /path/to/word-list\n", argv[0]);
