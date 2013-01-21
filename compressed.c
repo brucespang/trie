@@ -31,6 +31,12 @@ struct string {
 };
 typedef struct string string;
 
+struct strings {
+  uint32_t length;
+  string strings[];
+};
+typedef struct strings strings;
+
 uint8_t arr_popcount(uint64_t* arr, int size) {
   int i, sum;
   sum = 0;
@@ -182,7 +188,7 @@ bool contains(node* root, char* word) {
   return !(n == NULL);
 }
 
-GSList* complete(node* root, char* prefix) {
+strings* complete(node* root, char* prefix) {
   uint32_t i;
   node* n = root;
 
@@ -195,20 +201,21 @@ GSList* complete(node* root, char* prefix) {
     return NULL;
   } else {
     GSList* suffixes = reversed_suffixes(n);
-    GSList* res = NULL;
-    string* str, * new_str;
+    uint32_t len = g_slist_length(suffixes);
+    strings* res = malloc(sizeof(strings)+len*sizeof(string));
+    string* str;
+    uint32_t j;
 
-    while(g_slist_length(suffixes) > 0) {
+    for(i = len; i > 0; i--) {
       str = g_slist_nth_data(suffixes, 0);
-      new_str = malloc(sizeof(string));
 
-      new_str->value[str->length] = '\0';
-      for(i = 0; str->length--; i++) {
-	new_str->value[i] = str->value[str->length];
-        new_str->length++;
+      res->strings[i-1].value[str->length] = '\0';
+      for(j = 0; str->length--; j++) {
+	res->strings[i-1].value[j] = str->value[str->length];
+        res->strings[i-1].length++;
       }
+      res->length++;
 
-      res = g_slist_prepend(res, new_str->value);
       suffixes = g_slist_remove(suffixes, str);
       free(str);
     }
@@ -250,11 +257,10 @@ int main(int argc, char* argv[]) {
     fclose(in);
   }
 
-  GSList* res = complete(root, "a");
-  while(((int) g_slist_length(res)) > 0) {
-    char* str = g_slist_nth_data(res,0);
-    printf("%s\n", str);
-    res = g_slist_remove(res, str);
+  unsigned int k;
+  strings* res = complete(root, "a");
+  for(k = 0; k < res->length; k++) {
+    printf("%s\n", res->strings[k].value);
   }
 
   return 0;
