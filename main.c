@@ -6,7 +6,7 @@
 #include "trie.h"
 
 int main(int argc, char* argv[]) {
-  int i,j;
+  uint32_t i;
   FILE* in;
   char* line = malloc(MAX_STRING_SIZE);
   trie root = make_node('\0', 26);
@@ -16,18 +16,18 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  for(i = 1; i < argc; i++) {
-    in = fopen(argv[i], "r");
+  while(argc-- > 1) {
+    in = fopen(argv[argc], "r");
 
     if(in == NULL) {
-      fprintf(stderr, "Error opening: %s\n", argv[i]);
+      fprintf(stderr, "Error opening: %s\n", argv[argc]);
       return 1;
     }
 
     while(fgets(line,MAX_STRING_SIZE,in) != NULL) {
-      for(j = 0; j < MAX_STRING_SIZE; j++) {
-      	if(line[j] == '\n') {
-      	  line[j] = '\0';
+      for(i = 0; i < MAX_STRING_SIZE; i++) {
+      	if(line[i] == '\n') {
+      	  line[i] = '\0';
       	}
       }
 
@@ -37,10 +37,9 @@ int main(int argc, char* argv[]) {
     fclose(in);
   }
 
-  unsigned int k;
   strings* res = complete(root, "a");
-  for(k = 0; k < strings_length(res); k++) {
-    printf("%s\n", to_c_string(string_at(res, k)));
+  for(i = 0; i < strings_length(res); i++) {
+    printf("%s\n", to_c_string(string_at(res, i)));
   }
 
   return 0;
