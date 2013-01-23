@@ -4,7 +4,7 @@ CFLAGS=-I/usr/local/Cellar/glib/2.32.4/include/glib-2.0 -I/usr/local/Cellar/glib
 all: compile run
 
 compile:
-	$(CC) $(CFLAGS) *.c
+	$(CC) $(CFLAGS) src/*.c
 
 run:
 	time ./a.out /usr/share/dict/words

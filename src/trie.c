@@ -10,6 +10,10 @@
 #include "strings.h"
 #include "trie.h"
 
+trie make_trie() {
+  return make_node('\0', 26);
+}
+
 trie insert(trie root, char* str) {
   uint32_t i;
   trie* root_ptr = &root;

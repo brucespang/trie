@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
   uint32_t i;
   FILE* in;
   char* line = malloc(MAX_STRING_SIZE);
-  trie root = make_node('\0', 26);
+  trie root = make_trie();
 
   if(argc == 1) {
     fprintf(stderr, "Usage: %s /path/to/word-list\n", argv[0]);
