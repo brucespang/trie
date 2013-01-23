@@ -15,12 +15,13 @@ trie make_trie() {
 }
 
 trie insert(trie root, char* str) {
-  uint32_t i;
   trie* root_ptr = &root;
   trie* n = root_ptr;
 
-  for(i = 0; i < strlen(str); i++) {
-    n = add_child(n, str[i]);
+  // There's a problem here if str isn't a null terminated string, but there's one everywhere else
+  // too (i.e. strlen, printf, etc...), so we can probably no worry about it.
+  for(; *str != '\0'; str++){
+    n = add_child(n, *str);
   }
 
   set_end_of_word(*n, true);
@@ -28,22 +29,20 @@ trie insert(trie root, char* str) {
 }
 
 bool contains(trie root, char* word) {
-  uint32_t i;
   trie n = root;
 
-  for(i = 0; n != NULL && i < strlen(word); i++) {
-    n = get_child(n, word[i]);
+  for(; n != NULL && *word != '\0'; word++) {
+    n = get_child(n, *word);
   }
 
   return n != NULL && end_of_word(n);
 }
 
 strings* complete(trie root, char* prefix) {
-  uint32_t i;
   trie n = root;
 
-  for(i = 0; n != NULL && i < strlen(prefix); i++) {
-    n = get_child(n, prefix[i]);
+  for(; n != NULL && *prefix != '\0'; prefix++) {
+    n = get_child(n, *prefix);
   }
 
   if(n == NULL) {
@@ -55,7 +54,7 @@ strings* complete(trie root, char* prefix) {
     prefix_len = strlen(prefix);
     strings* res = make_strings(len);
     string* str;
-    int j;
+    int i,j;
     char c;
 
     // Loop through each suffix. We can't check if i >= 0, since i is unsigned.
