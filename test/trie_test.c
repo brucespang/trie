@@ -19,7 +19,8 @@ int main() {
   assert(!contains(t, "ca"), "does not contain ca");
 
   /* assert("abc" == complete(t, "a")[0], "abc is first completion for a"); */
-  /* assert("abt" == complete(t, "a")[1], "abc is second completion for a"); */
+  /* assert("abc" == complete(t, "ab")[0], "abc is first completion for a"); */
+  /* assert("abt" == complete(t, "a")[1], "abc is second completion for ab"); */
   /* assert("test" == complete(t, "t")[0], "test is a completion for t"); */
   /* assert("katrina" == complete(t, "k")[0], "katrina is a completion for k"); */
   /* assert("cat" == complete(t, "c")[0], "cat is a completion for c"); */

@@ -18,8 +18,8 @@ trie insert(trie root, char* str) {
   trie* root_ptr = &root;
   trie* n = root_ptr;
 
-  // There's a problem here if str isn't a null terminated string, but there's one everywhere else
-  // too (i.e. strlen, printf, etc...), so we can probably no worry about it.
+  // There's a problem here if str isn't a null terminated string, but there's one
+  // everywhere else too (e.g. strlen, printf), so we can probably not ignore it.
   for(; *str != '\0'; str++){
     n = add_child(n, *str);
   }
@@ -39,10 +39,12 @@ bool contains(trie root, char* word) {
 }
 
 strings* complete(trie root, char* prefix) {
+  uint32_t i, len;
+  len = strlen(prefix);
   trie n = root;
 
-  for(; n != NULL && *prefix != '\0'; prefix++) {
-    n = get_child(n, *prefix);
+  for(i = 0; n != NULL && i < len; i++) {
+    n = get_child(n, prefix[i]);
   }
 
   if(n == NULL) {
