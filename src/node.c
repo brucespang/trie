@@ -15,17 +15,6 @@ struct node {
   struct node* children[];
 };
 
-uint8_t arr_popcount(uint64_t* arr, int size) {
-  int i, sum;
-  sum = 0;
-
-  for(i = 0; i < size; i++) {
-    sum += __builtin_popcountl(arr[i]);
-  }
-
-  return sum;
-}
-
 void set_bit(uint64_t x[], uint8_t n) {
   int offset = n % 64;
   int index = n / 64;
@@ -58,22 +47,21 @@ node* make_node(char value, uint8_t array_size) {
 }
 
 uint8_t child_index_of(node n, uint8_t b) {
-  uint64_t mask_below_b[4];
-  int i;
+  uint8_t popcount, i, offset, index;
+  popcount = 0;
+  index = b / 64;
+  offset = b % 64;
 
   for(i = 0; i < 4; i++) {
-    if(i > (b / 64)) {
-      mask_below_b[i] = 0;
-    } else if(i < (b / 64)) {
-      mask_below_b[i] = n.mask[i];
-    } else {
-      int offset = b % 64;
+    if(i < index) {
+      popcount += __builtin_popcountl(n.mask[i]);
+    } else if (i == index) {
       // e.g. 00101 & (11111 -> 11100 -> 00011) -> 00001
-      mask_below_b[i] = n.mask[i] & ~(MAX_UNSIGNED_LONG << offset);
+      popcount += __builtin_popcountl(n.mask[i] & ~(MAX_UNSIGNED_LONG << offset));
     }
   }
 
-  return arr_popcount(mask_below_b, 4);
+  return popcount;
 }
 
 node* resize_node(node* n, uint8_t new_size) {
