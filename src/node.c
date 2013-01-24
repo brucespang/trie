@@ -47,18 +47,14 @@ node* make_node(char value, uint8_t array_size) {
 }
 
 uint8_t child_index_of(node n, uint8_t b) {
-  uint8_t popcount, i, offset, index;
+  uint8_t popcount, index;
   popcount = 0;
   index = b / 64;
-  offset = b % 64;
 
-  for(i = 0; i < 4; i++) {
-    if(i < index) {
-      popcount += __builtin_popcountl(n.mask[i]);
-    } else if (i == index) {
-      // e.g. 00101 & (11111 -> 11100 -> 00011) -> 00001
-      popcount += __builtin_popcountl(n.mask[i] & ~(MAX_UNSIGNED_LONG << offset));
-    }
+  // e.g. 00101 & (11111 -> 11100 -> 00011) -> 00001
+  popcount += __builtin_popcountl(n.mask[index] & ~(MAX_UNSIGNED_LONG << b % 64));
+  while(index--) {
+      popcount += __builtin_popcountl(n.mask[index]);
   }
 
   return popcount;
