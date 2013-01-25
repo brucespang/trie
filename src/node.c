@@ -108,9 +108,14 @@ node* get_child(node* n, uint8_t b) {
   return n->children[child_index_of(*n, b)];
 }
 
+// TODO: rewrite with dynamic arrays. The slowest part of each invocation of this
+// are the calls to the linked list functions.
 GSList* reversed_suffixes(node* n) {
-  GSList* res = NULL;
-  int i;
+  GSList* res, * child_res;
+  string* str;
+  int i,len;
+
+  res = NULL;
 
   if(n->end_of_word) {
     string* s = make_string();
@@ -119,10 +124,10 @@ GSList* reversed_suffixes(node* n) {
   }
 
   for(i = 0; i < n->num_children; i++) {
-    GSList* child_res = reversed_suffixes(n->children[i]);
+    child_res = reversed_suffixes(n->children[i]);
 
-    while(g_slist_length(child_res) > 0) {
-      string* str = (string*) g_slist_nth_data(child_res, 0);
+    for(len = g_slist_length(child_res); len > 0; len--) {
+      str = g_slist_nth_data(child_res, 0);
       append_char(str, n->value);
       res = g_slist_prepend(res, str);
       child_res = g_slist_remove(child_res, str);
